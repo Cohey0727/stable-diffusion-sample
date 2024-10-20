@@ -15,11 +15,16 @@ pipe = pipe.to("mps")
 
 # 画像生成
 prompt = "Landscape of a beautiful city at night, with a clear sky and a full moon, a beautiful cityscape with tall buildings and a clear sky with a full moon"
-image = pipe(prompt).images[0]
+images = pipe(prompt, num_images_per_prompt=2).images
 
 # フォルダがなければ作成
 os.makedirs("outputs", exist_ok=True)
 
 # 乱数でファイル名を生成
-filename = str(uuid.uuid4()) + ".png"
-image.save(f"outputs/{filename}")
+prefix = str(uuid.uuid4()).replace("-", "")
+
+# 画像を保存
+for i, image in enumerate(images):
+  # 番号は0埋め、4桁
+  filename = f"{prefix}-{(i+1):04d}.png"
+  image.save(f"outputs/{filename}")
